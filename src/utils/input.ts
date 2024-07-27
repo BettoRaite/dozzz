@@ -28,7 +28,6 @@ export class Input extends Events<string> {
 		};
 
 		const handleKeyDown = (e: KeyboardEvent) => {
-			console.log("key press")
 			const key = e.key;
 			if (hasKey(key)) {
 				const keyLowCase = key.toLowerCase();
@@ -40,6 +39,7 @@ export class Input extends Events<string> {
 			}
 			this.emit(key);
 		};
+
 		const handleClick = (e: MouseEvent) => {
 			events.emit(EVENT_KEYS.shoot);
 		};

@@ -5,11 +5,11 @@ export class GameLoop {
 	private accumulatedTime = 0;
 	private readonly step = 1000 / 60; // 60 FPS
 	private readonly render: () => void;
-	private readonly draw: () => void;
+	private readonly update: (deltaTime: number) => void;
 
-	constructor(draw: () => void, render: () => void) {
-		this.draw = draw;
+	constructor(render: () => void, update: (deltaTime: number) => void) {
 		this.render = render;
+		this.update = update;
 	}
 
 	private loop = (timestamp: number) => {
@@ -20,18 +20,17 @@ export class GameLoop {
 		this.accumulatedTime += deltaTime;
 
 		while (this.accumulatedTime >= this.step) {
-			this.render();
+			this.update(deltaTime);
 			this.accumulatedTime -= this.step;
 		}
 
-		this.draw();
+		this.render();
 		this.rafId = requestAnimationFrame(this.loop);
 	};
 
 	start() {
 		if (!this.isRunning) {
 			this.isRunning = true;
-			this.lastFrame = performance.now();
 			this.rafId = requestAnimationFrame(this.loop);
 		}
 	}

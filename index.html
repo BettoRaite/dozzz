@@ -11,9 +11,23 @@
         justify-content: center;
         align-items: center;
       }
+      #canvas-debug {
+        z-index: 1;
+        pointer-events: none;
+        opacity: 0.5;
+        position: absolute;
+      }
     </style>
   </head>
   <body>
+    <canvas
+      id="canvas-debug"
+      width="500px"
+      height="500px"
+      style="border: 1px solid black"
+    >
+      Dozzz game
+    </canvas>
     <canvas
       id="canvas"
       width="500px"
@@ -22,6 +36,7 @@
     >
       Dozzz game
     </canvas>
+
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
