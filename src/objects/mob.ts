@@ -12,21 +12,22 @@ export class Mob extends GameObject {
 	constructor(position?: Vector2) {
 		super(position);
 
-		events.on(EVENT_KEYS.bullet_move, (bullet) => {
+		events.on(EVENT_KEYS.bullet_move, this, (bullet) => {
 			if (bullet instanceof Bullet) {
 				const offset = 10;
 				const bulletPosX = bullet.position.x + offset;
 				const bulletPosY = bullet.position.y + offset;
-
-				const dx = Math.abs(this.position.x + Mob.size - bullet.position.x);
-				const dy = Math.abs(this.position.y + Mob.size - bullet.position.y);
+				const pivotPosX = this.position.x + Mob.size / 3;
+				const pivotPosY = this.position.y + Mob.size / 3;
+				const dx = Math.abs(pivotPosX - bullet.position.x);
+				const dy = Math.abs(pivotPosY - bullet.position.y);
 				const minDistance = 10;
 				if (dx <= minDistance && dy <= minDistance) {
 					console.log(bullet.position, this.position);
-
 					console.log("collide");
-					// this.detach();
 					bullet.collide();
+					this.detach();
+					events.unsubscribe(this);
 					return;
 				}
 			}
@@ -54,7 +55,12 @@ export class Mob extends GameObject {
 		ctx.fillStyle = "green";
 		ctx.fillRect(this.position.x, this.position.y, Mob.size, Mob.size);
 
-		const offset = Mob.size;
-		ctxDebug?.fillRect(this.position.x, this.position.y, offset, offset);
+		// const offset = Mob.size / 3;
+		// ctxDebug?.fillRect(
+		// 	this.position.x + offset,
+		// 	this.position.y + offset,
+		// 	offset,
+		// 	offset,
+		// );
 	}
 }

@@ -14,7 +14,7 @@ export class Player extends GameObject {
 	constructor(position?: Vector2) {
 		super(position);
 
-		events.on(EVENT_KEYS.shoot, () => {
+		events.on(EVENT_KEYS.shoot, this, () => {
 			this.shoot();
 		});
 	}

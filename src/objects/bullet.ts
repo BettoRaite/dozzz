@@ -3,7 +3,6 @@ import { globalState, G_STATE_KEYS } from "../global-state.ts";
 import { GameObject } from "../game-object.ts";
 import { Vector2 } from "../utils/vector2.ts";
 import { calcAngle } from "../utils/math.ts";
-import { ctxDebug } from "../debug.ts";
 
 export class Bullet extends GameObject {
 	static lifespanSeconds = 30;
@@ -45,7 +44,9 @@ export class Bullet extends GameObject {
 
 		ctx.fillStyle = "red";
 		events.emit(EVENT_KEYS.bullet_move, this);
-		ctx.fillRect(this.position.x, this.position.y, Bullet.size, Bullet.size);
+		ctx.beginPath();
+		ctx.arc(this.position.x, this.position.y, Bullet.size, 0, 2 * Math.PI);
+		ctx.stroke();
 	}
 	collide() {
 		this.detach();

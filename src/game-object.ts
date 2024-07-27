@@ -14,10 +14,12 @@ export class GameObject {
 		this.children.map((child) => child.stepEntry(deltaTime, root));
 		this.step(deltaTime, root);
 	}
-	step(deltaTime: number, root?: GameObject) {}
+	step(_deltaTime: number, _root?: GameObject) {}
 	draw(ctx: CanvasRenderingContext2D, x: number, y: number) {
 		this.drawSelf(ctx, x, y);
-		this.children.map((child) => child.draw(ctx, x, y));
+		this.children.map((child) =>
+			child.draw(ctx, this.position.x, this.position.y),
+		);
 	}
 
 	protected drawSelf(ctx: CanvasRenderingContext2D, _x: number, _y: number) {

@@ -4,8 +4,8 @@ import { globalState, G_STATE_KEYS } from "./global-state.ts";
 import { Vector2 } from "./utils/vector2.ts";
 
 Bullet.speed = 5;
-Bullet.size = 10;
-Mob.speed = 0;
+Bullet.size = 5;
+Mob.speed = 0.3;
 
 type Context2DMixin = {
 	clearCanvas: () => void;

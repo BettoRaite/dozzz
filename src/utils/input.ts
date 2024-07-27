@@ -1,4 +1,5 @@
-import { Events, events, EVENT_KEYS } from "../events/events.ts";
+import { Events } from "../events/events.ts";
+import type { GameObject } from "../game-object.ts";
 
 const keyValueMap: Record<string, number> = {
 	w: -1,
@@ -41,15 +42,15 @@ export class Input extends Events<string> {
 		};
 
 		const handleClick = (e: MouseEvent) => {
-			events.emit(EVENT_KEYS.shoot);
+			this.emit("shoot");
 		};
 
 		window.addEventListener("keyup", handleKeyUp);
 		window.addEventListener("keydown", handleKeyDown);
 		window.addEventListener("click", handleClick);
 	}
-	onKey(key: string, handler: () => void) {
-		this.on(key, handler);
+	on(key: string, caller: GameObject, keyHandler: () => void) {
+		super.on(key, caller, keyHandler);
 	}
 	get currentKey() {
 		return this._currentKey;

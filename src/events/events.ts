@@ -1,3 +1,4 @@
+import type { GameObject } from "../game-object.ts";
 export const EVENT_KEYS = {
 	shoot: Symbol("An event key for when user wants to shoot"),
 	player_move: Symbol(
@@ -10,6 +11,7 @@ export const EVENT_KEYS = {
 
 type Listener<T> = {
 	key: T;
+	caller: GameObject;
 	handler: (...values: unknown[]) => void;
 };
 
@@ -22,11 +24,17 @@ export class Events<T> {
 			}
 		}
 	}
-	on(key: T, handler: (...values: unknown[]) => void) {
+	on(key: T, caller: GameObject, handler: (...values: unknown[]) => void) {
 		this.listeners.push({
 			key,
 			handler,
+			caller,
 		});
+	}
+	unsubscribe(caller: GameObject) {
+		this.listeners = this.listeners.filter(
+			(listener) => listener.caller !== caller,
+		);
 	}
 }
 
