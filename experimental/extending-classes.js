@@ -1,3 +1,4 @@
+globalThis.alert = console.log;
 class GameObject {
 	parent = null;
 	constructor() {
@@ -9,7 +10,7 @@ class GameObject {
 	}
 }
 
-const mainScene = new GameObject();
+// const mainScene = new GameObject();
 
 class Player extends GameObject {
 	parent = mainScene;
@@ -19,5 +20,23 @@ class Player extends GameObject {
 	}
 }
 
-const player = new Player();
-player.draw();
+// const player = new Player();
+// player.draw();
+
+const animal = {
+	name: "Animal",
+	eat() {
+		alert(`${this.name} eats.`);
+	},
+};
+
+const rabbit = {
+	__proto__: animal,
+	name: "Rabbit",
+	eat() {
+		// that's how super.eat() could presumably work
+		this.__proto__.eat.call(this); // (*)
+	},
+};
+
+rabbit.eat(); // Rabbit eats.
