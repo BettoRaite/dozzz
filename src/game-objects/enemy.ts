@@ -5,13 +5,13 @@ import { Vector2 } from "../utils/vector2.ts";
 import { Bullet } from "./bullet.ts";
 import { calcAngle } from "../utils/math.ts";
 import { ctxDebug, clearDebugCanvas } from "../debug.ts";
-
+import { Entity } from "../entity.ts";
 /*
   Extending classes 101: 
   Enemy.prototype.__proto__ will be GameObject.prototype, so methods are inherited.
 */
 
-export class Enemy extends GameObject {
+export class Enemy extends Entity {
   static size = 20;
   static speed = 1;
   constructor(position?: Vector2) {
@@ -29,8 +29,6 @@ export class Enemy extends GameObject {
         const dy = Math.abs(pivotPosY - bullet.position.y);
         const minDistance = 10;
         if (dx <= minDistance && dy <= minDistance) {
-          console.log(bullet.position, this.position);
-          console.log("collide");
           bullet.collide();
           this.detach();
           events.unsubscribe(this);

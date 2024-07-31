@@ -14,23 +14,24 @@ ctx.imageSmoothingEnabled = false;
 const mainScene = new GameObject();
 const player = new Player(new Vector2(100 * 2, 100 * 2));
 mainScene.addChild(player);
-const spawner = new Spawner();
+const spawner = new Spawner({
+  scene: mainScene,
+  Constructor: Enemy,
+  start: new Vector2(0, 0),
+  end: new Vector2(canvas?.height, canvas?.width),
+  growthRate: 1,
+  offset: 100,
+  isOutbounds: true,
+});
 
-spawner.spawn(
-  mainScene,
-  100,
-  Enemy,
-  new Vector2(0, 0),
-  new Vector2(canvas?.height, canvas?.width),
-  100,
-  true
-);
+spawner.spawn();
 
 const input = new Input();
 
 input.on(" ", player, () => {
   player.shoot();
 });
+
 input.on("shoot", player, () => {
   player.shoot();
 });
@@ -41,9 +42,11 @@ const gameLoop = new GameLoop(
   function render() {
     mainScene.draw(ctx, position.x, position.y);
   },
+
   function update(deltaTime: number) {
     [position.x, position.y] = input.getDirection();
     mainScene.stepEntry(deltaTime, mainScene);
+    // spawner.respawn();
     ctx.clearCanvas();
   }
 );

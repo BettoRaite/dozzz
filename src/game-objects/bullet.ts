@@ -1,10 +1,10 @@
 import { events, EVENT_KEYS } from "../events/events.ts";
 import { globalState, G_STATE_KEYS } from "../global-state.ts";
-import { GameObject } from "../game-object.ts";
 import { Vector2 } from "../utils/vector2.ts";
 import { calcAngle } from "../utils/math.ts";
+import { Entity } from "../entity.ts";
 
-export class Bullet extends GameObject {
+export class Bullet extends Entity {
   static lifespanSeconds = 30;
   static size = 10;
   static speed = 6;
