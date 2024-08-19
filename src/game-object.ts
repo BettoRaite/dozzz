@@ -1,7 +1,8 @@
 import { Vector2 } from "./utils/vector2.ts";
+
 export class GameObject {
 	static size: number;
-	static color: number;
+	static color: string;
 	position: Vector2;
 	protected parent?: GameObject;
 	protected children: GameObject[];
@@ -15,17 +16,27 @@ export class GameObject {
 		this.step(deltaTime, root);
 	}
 	step(_deltaTime: number, _root?: GameObject) {}
-	draw(ctx: CanvasRenderingContext2D, x: number, y: number) {
-		this.drawSelf(ctx, x, y);
+	draw(
+		ctx: CanvasRenderingContext2D,
+		x: number,
+		y: number,
+		effect?: () => void,
+	) {
+		this.renderSelf(x, y);
+
+		// performing side effects
+		if (typeof effect === "function") effect();
+
+		this.drawSelf(ctx);
+
 		this.children.map((child) =>
 			child.draw(ctx, this.position.x, this.position.y),
 		);
 	}
-
-	protected drawSelf(ctx: CanvasRenderingContext2D, _x: number, _y: number) {
+	protected renderSelf(_x: number, _y: number) {}
+	protected drawSelf(ctx: CanvasRenderingContext2D) {
 		ctx.fillStyle = "black";
 	}
-
 	addChild(gameObject: GameObject) {
 		if (!(gameObject instanceof GameObject)) {
 			throw new TypeError("Expected an instance of gameobject.");
@@ -33,11 +44,9 @@ export class GameObject {
 		this.children.push(gameObject);
 		gameObject.parent = this;
 	}
-
 	removeChild(gameObject: GameObject) {
 		this.children = this.children.filter((child) => child !== gameObject);
 	}
-
 	detach() {
 		this.parent?.removeChild(this);
 	}

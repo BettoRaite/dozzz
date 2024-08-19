@@ -1,0 +1,51 @@
+@import url("https://fonts.googleapis.com/css?family=Julius+Sans+One");
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  background-color: #f6f7f8;
+}
+.game-title {
+  font-family: "Julius Sans One", sans-serif;
+  font-weight: bold;
+  text-align: center;
+  font-size: 35px;
+  color: #1bcdbb;
+  background: conic-gradient(rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.1));
+  padding: 0.5rem;
+  border-radius: 10px;
+}
+.start-game-button {
+  position: absolute;
+  padding: 2rem;
+  display: none;
+}
+.wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.game-canvas {
+  position: relative;
+  border-radius: 10px;
+  width: 90%;
+  height: 90%;
+  background-color: #d6a184;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.wave-counter {
+  position: absolute;
+  top: 17%;
+
+  z-index: 1;
+  font-size: 1.2rem;
+}
+#canvas-debug {
+  z-index: 2;
+  pointer-events: none;
+  opacity: 1;
+  border: none;
+  position: absolute;
+}

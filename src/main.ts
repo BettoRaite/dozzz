@@ -7,13 +7,15 @@ import { Vector2 } from "./utils/vector2.ts";
 import { Enemy } from "./game-objects/enemy.ts";
 import { Spawner } from "./spawner.ts";
 import { canvas } from "./init.ts";
+// import { WaveCounter } from "./wave-counter.ts";
+import { Tree } from "./game-objects/tree";
+
+// const startGameButton = document.getElementById("start-game-button");
 
 const ctx = getContext2D();
 ctx.imageSmoothingEnabled = false;
 
 const mainScene = new GameObject();
-const player = new Player(new Vector2(100 * 2, 100 * 2));
-mainScene.addChild(player);
 const spawner = new Spawner({
   scene: mainScene,
   Constructor: Enemy,
@@ -22,8 +24,15 @@ const spawner = new Spawner({
   growthRate: 1,
   offset: 100,
   isOutbounds: true,
+  entitiesToSpawn: 100,
 });
 
+// const waveCounter = new WaveCounter(spawner);
+
+const player = new Player(new Vector2(100 * 2, 100 * 2));
+const tree = new Tree(player.position.copy(-20));
+mainScene.addChild(player);
+mainScene.addChild(tree);
 spawner.spawn();
 
 const input = new Input();
@@ -51,3 +60,8 @@ const gameLoop = new GameLoop(
   }
 );
 gameLoop.start();
+
+// startGameButton?.addEventListener("click", () => {
+// startGameButton.style.display = "none";
+// gameLoop.start();
+// });

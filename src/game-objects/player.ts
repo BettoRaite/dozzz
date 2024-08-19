@@ -1,10 +1,12 @@
-import { GameObject } from "../game-object.ts";
+// import { GameObject } from "../game-object.ts";
 import { Bullet } from "./bullet.ts";
 import type { Vector2 } from "../utils/vector2.ts";
 import { events, EVENT_KEYS } from "../events/events.ts";
 import { globalState, G_STATE_KEYS } from "../global-state.ts";
+import { Entity } from "../entity";
+import { Collider } from "../components/collider";
 
-export class Player extends GameObject {
+export class Player extends Entity {
   static speed = 2;
   static size = 10;
 
@@ -13,35 +15,29 @@ export class Player extends GameObject {
 
   constructor(position?: Vector2) {
     /*
-		
-		[[ConstructorKind]]:"derived". That’s a special internal label.
+		  [[ConstructorKind]]:"derived". That’s a special internal label.
 
-That label affects its behavior with new.
+      That label affects its behavior with new.
 
-When a regular function is executed with new, it creates an empty object and assigns it to this.
-But when a derived constructor runs, it doesn’t do this. It expects the parent constructor to do this job.
-So a derived constructor must call super in order to execute its parent (base) constructor, otherwise the object for this won’t be created. And we’ll get an error.
+      When a regular function is executed with new, it creates an empty object and assigns it to this.
+      But when a derived constructor runs, it doesn’t do this. It expects the parent constructor to do this job.
+      So a derived constructor must call super in order to execute its parent (base) constructor, otherwise the object for this won’t be created. And we’ll get an error.
 		*/
     super(position);
     /*
-		
-		In other words, the parent constructor always uses its own field value, not the overridden one.
-		with method it's different
-		
+  		In other words, the parent constructor always uses its own field value, not the overridden one.
+	  	But with methods it's different
 		*/
     events.on(EVENT_KEYS.shoot, this, () => {
       this.shoot();
     });
   }
-  protected drawSelf(
-    ctx: CanvasRenderingContext2D,
-    x: number,
-    y: number
-  ): void {
+  protected renderSelf(x: number, y: number) {
     this.position.x += x * Player.speed;
     this.position.y += y * Player.speed;
     globalState.setState(G_STATE_KEYS.playerPos, this.position);
-
+  }
+  protected drawSelf(ctx: CanvasRenderingContext2D): void {
     ctx.fillRect(this.position.x, this.position.y, Player.size, Player.size);
   }
   shoot() {
@@ -58,3 +54,9 @@ So a derived constructor must call super in order to execute its parent (base) c
     this.addChild(bullet);
   }
 }
+Player.addComponent(
+  Collider({
+    size: 10,
+    isCollider: false,
+  })
+);

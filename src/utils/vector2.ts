@@ -5,7 +5,7 @@ export class Vector2 {
 		this.x = x ?? 0;
 		this.y = y ?? 0;
 	}
-	copy() {
-		return new Vector2(this.x, this.y);
+	copy(offset = 0) {
+		return new Vector2(this.x + offset, this.y + offset);
 	}
 }

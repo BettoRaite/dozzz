@@ -11,32 +11,32 @@
         justify-content: center;
         align-items: center;
       }
-      #canvas-debug {
-        z-index: 1;
-        pointer-events: none;
-        opacity: 0.5;
-        position: absolute;
-      }
     </style>
+    <link rel="stylesheet" href="styles/style.css" />
   </head>
   <body>
-    <canvas
-      id="canvas-debug"
-      width="500px"
-      height="500px"
-      style="border: 1px solid black"
-    >
-      Dozzz game
-    </canvas>
-    <canvas
-      id="canvas"
-      width="500px"
-      height="500px"
-      style="border: 1px solid black"
-    >
-      Dozzz game
-    </canvas>
-
+    <div class="wrapper">
+      <h1 class="game-title">Dozzz</h1>
+      <p class="wave-counter" id="wave-counter">Wave: 1</p>
+      <canvas
+        class="game-canvas"
+        id="canvas"
+        width="500px"
+        height="500px"
+        style="border: 1px solid black"
+      >
+        Dozzz game
+        <canvas
+          id="canvas-debug"
+          width="500px"
+          height="500px"
+          style="border: 1px solid black"
+        >
+          Dozzz game
+        </canvas>
+      </canvas>
+    </div>
+    <button class="start-game-button" id="start-game-button">Start</button>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>

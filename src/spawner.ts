@@ -2,7 +2,7 @@ import { Vector2 } from "./utils/vector2.ts";
 import { getRandNum, getRandBool, getRandInt } from "./utils/random.ts";
 import type { GameObject } from "./game-object.ts";
 import { events, EVENT_KEYS } from "./events/events.ts";
-import { isObject } from "./utils/type.ts";
+import { isObject } from "bettoraite-utilz";
 
 type GameObjectConstructor = {
   new (position?: Vector2): GameObject;
@@ -18,18 +18,8 @@ type SpawnerParams = {
   offset?: number;
   isOutbounds?: boolean;
 };
+
 export class Spawner {
-  // scene: GameObject;
-  // Constructor: GameObjectConstructor;
-  /**
-   *
-   * @param scene
-   * @param entities
-   * @param Constructor
-   * @param position
-   * @param offset - If offset is specified then the entity will be spawned outbounds, in
-   * other words at possitions Xmin - offset
-   */
   scene: GameObject;
   entitiesToSpawn: number;
   EntityConstructor: GameObjectConstructor;
@@ -38,9 +28,8 @@ export class Spawner {
   growthRate;
   offset;
   isOutbounds;
+  private entitiesCounter = 0;
 
-  private canSpawn = true;
-  private entitiesCounter: number = 0;
   constructor({
     scene,
     Constructor,
@@ -63,7 +52,7 @@ export class Spawner {
 
   spawn() {
     this.entitiesCounter = this.entitiesToSpawn;
-    console.log(this.entitiesToSpawn);
+
     Spawner.spawn(
       this.scene,
       this.EntityConstructor,
@@ -74,18 +63,21 @@ export class Spawner {
       this.isOutbounds
     );
 
-    events.on(EVENT_KEYS.entity_destroyed, this, (entity) => {
-      if (!isObject(entity)) {
-        throw new TypeError("entity must be an instance of gameObject");
-      }
-      if (
-        entity instanceof this.EntityConstructor &&
-        this.entitiesCounter > 0
-      ) {
-        this.entitiesCounter -= 1;
-        this.respawn();
-      }
-    });
+    events.emit(EVENT_KEYS.new_wave, this);
+
+    if (!events.has(this))
+      events.on(EVENT_KEYS.entity_destroyed, this, (entity) => {
+        if (!isObject(entity)) {
+          throw new TypeError("entity must be an instance of gameObject");
+        }
+        if (
+          Object.getPrototypeOf(entity)?.constructor ===
+            this.EntityConstructor &&
+          this.entitiesCounter > 0
+        ) {
+          this.entitiesCounter -= 1;
+        }
+      });
   }
   static spawn(
     scene: GameObject,
@@ -96,6 +88,7 @@ export class Spawner {
     offset = 0,
     isOutbounds = false
   ) {
+    console.log(entitiesNumber);
     for (let i = 0; i < entitiesNumber; ++i) {
       let position: Vector2;
       if (isOutbounds) {
@@ -110,7 +103,6 @@ export class Spawner {
   }
   respawn() {
     if (this.entitiesCounter === 0) {
-      console.log(this.entitiesCounter);
       this.entitiesToSpawn += this.growthRate;
       this.entitiesCounter = this.entitiesToSpawn;
       this.spawn();
