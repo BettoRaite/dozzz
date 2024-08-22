@@ -1,20 +1,18 @@
 import { events, EVENT_KEYS } from "../events/events.ts";
 import { globalState, G_STATE_KEYS } from "../global-state.ts";
-import { GameObject } from "../game-object.ts";
 import { Vector2 } from "../utils/vector2.ts";
 import { calcAngle } from "../utils/math.ts";
+// import { GameObjecast } from "../game-object.ts";
+import { Entity } from "../entity.ts";
 
-export class Bullet extends GameObject {
+export class Bullet extends Entity {
   static lifespanSeconds = 30;
   static size = 10;
   static speed = 6;
+  static color = "black";
 
   positionChange: Vector2 = new Vector2();
-  protected drawSelf(
-    ctx: CanvasRenderingContext2D,
-    _x: number,
-    _y: number
-  ): void {
+  protected renderSelf() {
     if (this.positionChange.x === 0 && this.positionChange.y === 0) {
       const mousePos = globalState.getState(G_STATE_KEYS.mousePos);
 
@@ -38,17 +36,15 @@ export class Bullet extends GameObject {
         return;
       }
     }
-
     this.position.x += this.positionChange.x * Bullet.speed;
     this.position.y += this.positionChange.y * Bullet.speed;
-
-    ctx.fillStyle = "red";
+  }
+  protected drawSelf(ctx: CanvasRenderingContext2D): void {
+    ctx.fillStyle = Bullet.color;
     events.emit(EVENT_KEYS.bullet_move, this);
+
     ctx.beginPath();
     ctx.arc(this.position.x, this.position.y, Bullet.size, 0, 2 * Math.PI);
     ctx.stroke();
-  }
-  collide() {
-    this.detach();
   }
 }

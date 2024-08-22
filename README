@@ -1,0 +1,254 @@
+
+# Shooter game
+
+Is it fun? Idk try out. 
+
+## Live Demo
+
+[View Demo](https://todoapp-6jsexevhz-bettoraites-projects-49310c2a.vercel.app)
+
+
+# Things I'm proud of.
+
+This one. 
+It's a collision system that I have created.
+The main idea behind it is, that you add an object
+into linked list which is self-sorted. You call
+isTouching on linked list which tells you if the current object
+is touching with other nodes. This way I'm avoiding 
+checking collision(current position of the entity) against all entities in
+the game, hence increasing the performance.
+
+```ts
+type ListNodeValue = {
+  axisValue: number;
+  entity: Entity;
+};
+class ListNode {
+  value: ListNodeValue;
+  prev?: ListNode;
+  next?: ListNode;
+  constructor(value: ListNodeValue) {
+    this.value = value;
+  }
+}
+
+type Colision = {
+  prev?: ListNode;
+  next?: ListNode;
+};
+
+export class ColliderList {
+  private head?: ListNode;
+  private tail?: ListNode;
+  public length: number;
+  private colliders: WeakMap<Entity, ListNode>;
+  constructor() {
+    this.length = 0;
+    this.colliders = new WeakMap();
+    this.tail;
+  }
+  has(entity: Entity) {
+    return this.colliders.has(entity);
+  }
+  getAll(): number[] {
+    if (!this.head) {
+      return [];
+    }
+
+    let curr: ListNode | undefined = this.head;
+    const values = [];
+
+    while (curr) {
+      values.push(curr.value.axisValue);
+      curr = curr.next;
+    }
+    return values;
+  }
+  set(entity: Entity, axisValue: number) {
+    if (this.colliders.has(entity)) {
+      const node = this.colliders.get(entity) as ListNode;
+      node.value.axisValue = axisValue;
+      return;
+    }
+    this.length++;
+    const node = new ListNode({
+      axisValue,
+      entity,
+    });
+    this.colliders.set(entity, node);
+
+    if (!this.head) {
+      this.head = this.tail = node;
+      return;
+    }
+
+    node.next = this.head;
+    this.head.prev = node;
+    this.head = node;
+  }
+  sort(entity: Entity) {
+    const curr = this.colliders.get(entity);
+
+    if (!curr) {
+      throw new TypeError(
+        "trying to sort, but entity does not have collision."
+      );
+    }
+    this.bubbleDown(curr);
+    this.bubbleUp(curr);
+  }
+  private bubbleUp(curr: ListNode) {
+    let next = curr.next;
+
+    while (next && curr.value.axisValue > next.value.axisValue) {
+      if (curr.prev) {
+        curr.prev.next = next;
+        next.prev = curr.prev;
+      } else {
+        next.prev = undefined;
+        this.head = next;
+      }
+
+      curr.prev = next;
+
+      if (next.next) {
+        curr.next = next.next;
+        next.next.prev = curr;
+      } else {
+        curr.next = undefined;
+        this.tail = curr;
+      }
+
+      next.next = curr;
+      next = curr.next;
+    }
+  }
+  private bubbleDown(curr: ListNode) {
+    let prev = curr.prev;
+
+    while (prev && curr.value.axisValue < prev.value.axisValue) {
+      if (curr.next) {
+        curr.next.prev = prev;
+        prev.next = curr.next;
+      } else {
+        prev.next = undefined;
+        this.tail = prev;
+      }
+
+      curr.next = prev;
+
+      if (prev.prev) {
+        curr.prev = prev.prev;
+        prev.prev.next = curr;
+      } else {
+        curr.prev = undefined;
+        this.head = curr;
+      }
+
+      prev.prev = curr;
+      prev = curr.prev;
+    }
+  }
+  isColliding(entity: Entity, size: number): Colision | null {
+    const curr = this.colliders.get(entity);
+
+    if (!curr) {
+      throw new TypeError(
+        "trying to check if touching, but entity does not have collision."
+      );
+    }
+
+    const collision: Colision = {};
+
+    // const minRange = curr.value.axisValue;
+    // const maxRange = curr.value.axisValue + size;
+
+    if (curr?.prev) {
+      const prev = curr.prev;
+      if (curr.value.axisValue - prev.value.axisValue <= size) {
+        collision.prev = prev;
+      }
+    }
+
+    if (curr?.next) {
+      const next = curr.next;
+      if (next.value.axisValue - curr.value.axisValue <= size) {
+        collision.next = next;
+      }
+    }
+
+    return collision.prev ? collision : collision.next ? collision : null;
+  }
+}
+
+const xCollision = new ColliderList();
+const yCollision = new ColliderList();
+
+export function Collider(options: { size: number; isCollider?: boolean }) {
+  return (entity: Entity) => {
+    const { size, isCollider = true } = options;
+    xCollision.set(entity, entity.position.x);
+    xCollision.sort(entity);
+    yCollision.set(entity, entity.position.y);
+    yCollision.sort(entity);
+
+    if (isCollider) {
+      const collisionX = xCollision.isColliding(entity, size);
+      const collisionY = yCollision.isColliding(entity, size);
+
+      const offset = 1;
+      if (collisionX && collisionY) {
+        if (collisionY.prev) {
+          const colliding = collisionY.prev.value.entity;
+          colliding.position.y -= offset;
+        }
+        if (collisionX.next) {
+          const colliding = collisionX.next.value.entity;
+          colliding.position.y += offset;
+        }
+        if (collisionX.prev) {
+          const colliding = collisionX.prev.value.entity;
+          colliding.position.x -= offset;
+        }
+        if (collisionX.next) {
+          const colliding = collisionX.next.value.entity;
+          colliding.position.x += offset;
+        }
+      }
+    }
+  };
+}
+
+```
+
+
+## Technologies Used
+
+- **TypeScript**: A superset of JavaScript that adds static types, enhancing code quality and maintainability.
+
+
+## Getting Started
+
+To run this project locally, follow these steps:
+
+1. Clone the repository:
+   ```bash
+   git clone git@github.com:BettoRaite/dozzz.git
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd dozzz
+   ```
+3. Install the dependencies:
+   ```bash
+   pnpm install
+   ```
+4. Start the development server:
+   ```bash
+   pnpm run dev
+   ```
+   
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

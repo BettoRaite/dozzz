@@ -6,8 +6,10 @@ import { Vector2 } from "./utils/vector2.ts";
 
 Bullet.speed = 5;
 Bullet.size = 5;
+Bullet.color = "#9f4a54";
 Player.cooldownSeconds = 0.2;
-Enemy.speed = 0.5;
+Enemy.speed = 0.3;
+Enemy.color = "#8affc1";
 
 export const canvas = document.getElementById(
   "canvas"

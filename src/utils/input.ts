@@ -41,7 +41,7 @@ export class Input extends Events<string> {
       this.emit(key);
     };
 
-    const handleClick = (e: MouseEvent) => {
+    const handleClick = (_: MouseEvent) => {
       this.emit("shoot");
     };
 
